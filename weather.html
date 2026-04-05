@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form id="form">
+        <input type="text" id="input-field" placeholder="Enter city name" />
+        <button>Search</button>
+    </form>
+    <div id="climate-details"></div>
+
+    <script>
+        let form = document.getElementById("form")
+        let inputField = document.getElementById("input-field")
+        let climateDetails = document.getElementById("climate-details")
+        let apikey = "e850cd3ca798efac61d956a0dd2ddbe7"
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+            console.log(e)
+            console.log(inputField.value)
+
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputField.value}&appid=${apikey}&units=metric`
+
+            fetch(url)
+                .then((res) => {
+                    console.log(res)
+                    return res.json()
+                })
+                .then((res) => {
+                    console.log(res)
+                    if (res.cod === "404") {
+                        alert("City name is invalid")
+                        return
+                    }
+                    let { name, main, sys } = res
+                    let weatherObj = {
+                        name, temp: main.temp, country: sys.country
+                    }
+                    displayResult(weatherObj)
+                    inputField.value = ""
+                })
+        })
+
+
+
+        function displayResult(data) {
+            climateDetails.innerHTML = `
+        <div>
+            <p>City Name:${data.name}</p>
+            <p>Temperature:${data.temp}<sup>0</sup>C<p>
+            <p>Country:${data.country}</p>
+        </div>
+                `
+        }
+    </script>
+
+</body>
+
+</html>
